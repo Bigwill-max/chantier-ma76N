@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Chantiers MA76">
+<title>Contrôles Chantier – MA76 Nord</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+:root{
+  --bg:#f5f5f3;--surface:#fff;--surface2:#f0efed;--border:rgba(0,0,0,.1);--border2:rgba(0,0,0,.18);
+  --text:#1a1a1a;--text2:#666;--text3:#999;
+  --blue:#185FA5;--blue-bg:#e6f1fb;--blue-text:#0C447C;
+  --green:#0F6E56;--green-bg:#e1f5ee;--green-text:#085041;
+  --red:#A32D2D;--red-bg:#fcebeb;--red-text:#791F1F;
+  --orange:#854F0B;--orange-bg:#faeeda;--orange-text:#633806;
+  --purple:#534AB7;--purple-bg:#eeedfe;--purple-text:#26215C;
+  --r:8px;--rl:12px;
+}
+@media(prefers-color-scheme:dark){
+  :root{--bg:#1a1a1a;--surface:#252525;--surface2:#2e2e2e;--border:rgba(255,255,255,.1);--border2:rgba(255,255,255,.18);--text:#f0f0f0;--text2:#aaa;--text3:#666;--blue-bg:#0c3060;--blue-text:#85b7eb;--green-bg:#083020;--green-text:#5dcaa5;--red-bg:#3a1010;--red-text:#f09595;--orange-bg:#3a2000;--orange-text:#fac775;--purple-bg:#1e1c3a;--purple-text:#afa9ec;}
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:14px}
+.app{display:flex;flex-direction:column;height:100vh;max-width:480px;margin:0 auto;background:var(--surface)}
+.topbar{background:var(--surface);border-bottom:.5px solid var(--border);padding:0 16px;display:flex;align-items:center;gap:10px;height:52px;flex-shrink:0;z-index:50}
+.topbar-title{font-size:15px;font-weight:600;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.topbar-sub{font-size:11px;color:var(--text2)}
+.btn-icon{background:none;border:none;color:var(--text2);cursor:pointer;padding:6px;display:flex;align-items:center;font-size:22px;border-radius:var(--r)}
+.btn-icon:active{background:var(--surface2)}
+.bottom-nav{background:var(--surface);border-top:.5px solid var(--border);display:flex;height:56px;flex-shrink:0}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;border:none;background:none;cursor:pointer;color:var(--text3);font-size:10px;padding:6px 0;transition:color .15s}
+.nav-btn.active{color:var(--blue)}
+.nav-btn i{font-size:22px}
+.screen{display:none;flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.screen.active{display:block}
+.sp{padding:16px;display:flex;flex-direction:column;gap:12px}
+.card{background:var(--surface);border:.5px solid var(--border);border-radius:var(--rl);overflow:hidden}
+.cp{padding:14px 16px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;border-radius:var(--r);padding:10px 16px;font-size:14px;font-weight:500;cursor:pointer;border:none;width:100%}
+.btn-primary{background:var(--blue-bg);color:var(--blue-text)}
+.btn-outline{background:none;border:.5px solid var(--border2);color:var(--text)}
+.btn-success{background:var(--green-bg);color:var(--green-text)}
+.btn-danger{background:var(--red-bg);color:var(--red-text)}
+.btn-sm{padding:7px 14px;font-size:13px;width:auto}
+.btn:active{opacity:.85}
+.chip{font-size:10px;padding:2px 7px;border-radius:20px;font-weight:500}
+.chip-green{background:var(--green-bg);color:var(--green-text)}
+.chip-red{background:var(--red-bg);color:var(--red-text)}
+.chip-blue{background:var(--blue-bg);color:var(--blue-text)}
+.chip-orange{background:var(--orange-bg);color:var(--orange-text)}
+.chip-gray{background:var(--surface2);color:var(--text2)}
+.chip-purple{background:var(--purple-bg);color:var(--purple-text)}
+.prog-bar{height:3px;background:var(--border);border-radius:2px;margin-top:6px;overflow:hidden}
+.prog-fill{height:100%;border-radius:2px;background:var(--blue);transition:width .4s}
+.tab-bar{display:flex;background:var(--surface2);border-radius:var(--r);padding:3px;gap:2px}
+.tab-btn{flex:1;padding:7px 2px;border:none;background:none;border-radius:6px;font-size:11px;cursor:pointer;color:var(--text2);white-space:nowrap}
+.tab-btn.active{background:var(--surface);color:var(--text);font-weight:600;border:.5px solid var(--border)}
+.ch{display:flex;align-items:center;gap:10px;cursor:pointer;-webkit-user-select:none;padding:12px 14px}
+.ci{font-size:16px;color:var(--text3);transition:transform .2s;flex-shrink:0}
+.ci.open{transform:rotate(180deg)}
+.cb{display:none;border-top:.5px solid var(--border)}
+.cb.open{display:block}
+.point-row{display:flex;align-items:flex-start;gap:10px;padding:8px 14px;border-bottom:.5px solid var(--border)}
+.point-row:last-child{border-bottom:none}
+.point-info{flex:1;min-width:0}
+.point-label{font-size:13px;line-height:1.4}
+.point-norm{font-size:11px;color:var(--text2);margin-top:2px}
+.point-btns{display:flex;gap:5px;flex-shrink:0}
+.chk{width:32px;height:32px;border-radius:var(--r);border:.5px solid var(--border2);background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--text2)}
+.chk.ok{background:var(--green-bg);border-color:var(--green);color:var(--green-text)}
+.chk.nok{background:var(--red-bg);border-color:var(--red);color:var(--red-text)}
+.chk.na{background:var(--surface2);color:var(--text2);font-size:10px;font-weight:600}
+.obs-txt{width:100%;margin-top:6px;font-size:12px;padding:6px 8px;border:.5px solid var(--border);border-radius:var(--r);background:var(--surface2);color:var(--text);font-family:inherit;resize:none;display:none}
+.note-obs{font-size:12px;color:var(--text2);margin-top:4px;font-style:italic;border-left:2px solid var(--border2);padding-left:8px}
+.task-row{display:flex;align-items:center;gap:8px;padding:9px 14px;border-bottom:.5px solid var(--border)}
+.task-row:last-child{border-bottom:none}
+.task-label{flex:1;font-size:13px}
+.task-sbtn{padding:5px 12px;border-radius:20px;border:.5px solid var(--border2);font-size:12px;cursor:pointer;background:none;color:var(--text2);display:flex;align-items:center;gap:5px;white-space:nowrap}
+.task-sbtn.fait{background:var(--green-bg);border-color:var(--green);color:var(--green-text)}
+.task-sbtn.encours{background:var(--orange-bg);border-color:var(--orange);color:var(--orange-text)}
+.cmd-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:.5px solid var(--border)}
+.cmd-row:last-child{border-bottom:none}
+.cmd-iw{width:32px;height:32px;background:var(--surface2);border-radius:var(--r);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.cmd-ref{font-size:11px;padding:3px 7px;border:.5px solid var(--border);border-radius:var(--r);background:var(--surface);color:var(--text);width:100%;margin-top:3px}
+.cmd-btn{padding:4px 9px;border-radius:20px;border:.5px solid var(--border2);font-size:11px;cursor:pointer;background:none;color:var(--text2)}
+.cmd-btn.commande{background:var(--orange-bg);border-color:var(--orange);color:var(--orange-text)}
+.cmd-btn.livre{background:var(--green-bg);border-color:var(--green);color:var(--green-text)}
+.entry-card{background:var(--surface);border:.5px solid var(--border);border-radius:var(--rl);padding:12px 14px}
+.entry-photos{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.entry-photo{width:68px;height:68px;border-radius:var(--r);object-fit:cover;border:.5px solid var(--border);cursor:pointer}
+.photo-add{width:68px;height:68px;border-radius:var(--r);border:.5px dashed var(--border2);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text3);font-size:24px}
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.stat-card{background:var(--surface2);border-radius:var(--r);padding:10px 12px;text-align:center}
+.stat-card .val{font-size:22px;font-weight:700}
+.stat-card .lbl{font-size:11px;color:var(--text2);margin-top:2px}
+.form-group{display:flex;flex-direction:column;gap:4px}
+.form-group label{font-size:13px;color:var(--text2)}
+.form-group input,.form-group textarea,.form-group select{padding:9px 12px;border:.5px solid var(--border2);border-radius:var(--r);background:var(--surface);color:var(--text);font-size:14px;font-family:inherit;width:100%}
+.form-group textarea{resize:vertical;min-height:80px}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;align-items:flex-end;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{background:var(--surface);border-radius:var(--rl) var(--rl) 0 0;padding:20px 20px 36px;width:100%;max-height:90vh;overflow-y:auto;display:flex;flex-direction:column;gap:14px}
+.modal-title{font-size:16px;font-weight:600;display:flex;align-items:center;gap:8px}
+.modal-actions{display:flex;gap:8px}
+.modal-actions button{flex:1}
+.photo-viewer{display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:300;align-items:center;justify-content:center}
+.photo-viewer.open{display:flex}
+.photo-viewer img{max-width:95%;max-height:90vh;border-radius:var(--rl)}
+.pv-close{position:absolute;top:16px;right:16px;background:rgba(255,255,255,.15);border:none;color:#fff;width:36px;height:36px;border-radius:50%;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.gantt-header{display:flex;border-bottom:.5px solid var(--border);background:var(--surface2)}
+.gantt-label{width:88px;flex-shrink:0;padding:7px 8px;font-size:10px;font-weight:600;color:var(--text2);border-right:.5px solid var(--border)}
+.gantt-months{flex:1;display:flex}
+.gantt-month{flex:1;text-align:center;font-size:9px;color:var(--text3);padding:7px 1px;border-right:.5px solid var(--border)}
+.gantt-month:last-child{border-right:none}
+.gantt-row{display:flex;border-bottom:.5px solid var(--border);min-height:36px;align-items:center}
+.gantt-row:last-child{border-bottom:none}
+.gantt-rl{width:88px;flex-shrink:0;padding:4px 8px;font-size:11px;line-height:1.3;border-right:.5px solid var(--border)}
+.gantt-tl{flex:1;position:relative;height:36px}
+.gantt-bg{position:absolute;top:0;bottom:0;border-right:.5px solid var(--border)}
+.gantt-bar{position:absolute;top:8px;bottom:8px;border-radius:3px;overflow:hidden;display:flex}
+.gb-done{background:#0F6E56}
+.gb-enc{background:#EF9F27}
+.gb-att{background:#D3D1C7}
+.gantt-today{position:absolute;top:0;bottom:0;width:1.5px;background:#E24B4A;z-index:5}
+.gantt-pct{position:absolute;right:3px;top:50%;transform:translateY(-50%);font-size:9px;font-weight:600;color:var(--text2)}
+.empty{text-align:center;padding:40px 20px;color:var(--text2);font-size:13px;line-height:1.7}
+.empty i{font-size:40px;display:block;margin-bottom:10px;color:var(--text3)}
+.lot-stats{display:flex;gap:5px;margin-top:4px;flex-wrap:wrap}
+.ls{font-size:10px;padding:1px 6px;border-radius:20px}
+.divider{height:.5px;background:var(--border)}
+.section-lbl{font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.5px}
+.phase-card{background:var(--surface);border:.5px solid var(--border);border-radius:var(--rl);padding:12px 14px}
+.phase-row{display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:.5px solid var(--border)}
+.phase-row:last-child{border-bottom:none}
+.phase-bar{flex:2;height:5px;background:var(--border);border-radius:3px;overflow:hidden}
+.phase-bar-fill{height:100%;border-radius:3px}
+/* QR */
+#qr-canvas{display:block;margin:0 auto;border-radius:var(--r)}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <button class="btn-icon" id="backBtn" style="display:none" aria-label="Retour"><i class="ti ti-arrow-left"></i></button>
+    <div style="flex:1;min-width:0">
+      <div class="topbar-title" id="topbarTitle">MA76 Nord</div>
+      <div class="topbar-sub" id="topbarSub">Contrôles chantier</div>
+    </div>
+    <button class="btn-icon" id="btnAdd" onclick="openModalNew()" aria-label="Nouveau chantier"><i class="ti ti-plus"></i></button>
+  </div>
+
+  <!-- HOME -->
+  <div class="screen active" id="s-home">
+    <div class="sp">
+      <div id="home-list"></div>
+      <div id="home-empty" class="empty" style="display:none">
+        <i class="ti ti-building-warehouse"></i>
+        Aucun chantier.<br>Appuyez sur + pour créer<br>votre premier dossier.
+      </div>
+    </div>
+  </div>
+
+  <!-- CHANTIER -->
+  <div class="screen" id="s-chantier">
+    <div style="padding:12px 16px 8px">
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchTab('planning')" id="tab-planning">Planning</button>
+        <button class="tab-btn" onclick="switchTab('controles')" id="tab-controles">Contrôles</button>
+        <button class="tab-btn" onclick="switchTab('commandes')" id="tab-commandes">Commandes</button>
+        <button class="tab-btn" onclick="switchTab('registre')" id="tab-registre">Registre</button>
+        <button class="tab-btn" onclick="switchTab('info')" id="tab-info">Infos</button>
+      </div>
+    </div>
+    <div id="tab-content" class="sp" style="padding-top:4px"></div>
+  </div>
+
+  <!-- GANTT -->
+  <div class="screen" id="s-gantt">
+    <div class="sp" id="gantt-content"></div>
+  </div>
+
+  <div class="bottom-nav">
+    <button class="nav-btn active" id="nav-home" onclick="gotoScreen('home')"><i class="ti ti-building-warehouse"></i><span>Chantiers</span></button>
+    <button class="nav-btn" id="nav-gantt" onclick="gotoScreen('gantt')"><i class="ti ti-chart-gantt"></i><span>Vue globale</span></button>
+  </div>
+</div>
+
+<!-- MODAL NOUVEAU CHANTIER -->
+<div class="modal-overlay" id="modal-new">
+  <div class="modal">
+    <div class="modal-title"><i class="ti ti-building-warehouse"></i> Nouveau chantier</div>
+    <div class="form-group"><label>Nom / client *</label><input type="text" id="new-nom" placeholder="Ex : DUPONT – Yvetot"></div>
+    <div class="form-group"><label>Adresse</label><input type="text" id="new-adresse" placeholder="Ex : 12 rue des Érables, 76190"></div>
+    <div class="form-group"><label>Démarrage prévu</label><input type="date" id="new-date"></div>
+    <div class="form-group"><label>N° dossier</label><input type="text" id="new-ref" placeholder="Ex : MA76-2025-031"></div>
+    <div class="form-group"><label>Lien Google Drive (dossier documents)</label><input type="url" id="new-drive" placeholder="https://drive.google.com/..."></div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal('modal-new')">Annuler</button>
+      <button class="btn btn-primary" onclick="createChantier()"><i class="ti ti-check"></i> Créer</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL NOTE REGISTRE -->
+<div class="modal-overlay" id="modal-entry">
+  <div class="modal">
+    <div class="modal-title"><i class="ti ti-notebook"></i> Note de visite</div>
+    <div class="form-group"><label>Date *</label><input type="date" id="entry-date"></div>
+    <div class="form-group"><label>Observations</label><textarea id="entry-text" placeholder="Avancées, points vus, réserves…"></textarea></div>
+    <div class="form-group">
+      <label>Photos</label>
+      <div id="entry-photos-preview" class="entry-photos">
+        <div class="photo-add" onclick="document.getElementById('entry-photo-input').click()"><i class="ti ti-camera"></i></div>
+      </div>
+      <input type="file" id="entry-photo-input" accept="image/*" multiple style="display:none" onchange="handlePhotos(this)">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal('modal-entry');resetEntryForm()">Annuler</button>
+      <button class="btn btn-primary" onclick="saveEntry()"><i class="ti ti-check"></i> Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL ENVOI MAIL -->
+<div class="modal-overlay" id="modal-mail">
+  <div class="modal">
+    <div class="modal-title"><i class="ti ti-mail"></i> Envoyer par mail</div>
+    <div class="form-group"><label>Destinataire</label><input type="email" id="mail-to" placeholder="client@exemple.fr"></div>
+    <div class="form-group"><label>Contenu</label>
+      <select id="mail-type" onchange="updateMailPreview()">
+        <option value="registre">Dernière note de visite</option>
+        <option value="reserves">Liste des réserves</option>
+        <option value="planning">Avancement planning</option>
+        <option value="complet">Rapport complet</option>
+      </select>
+    </div>
+    <div class="form-group"><label>Aperçu</label><textarea id="mail-preview" rows="6" style="font-size:12px"></textarea></div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal('modal-mail')">Annuler</button>
+      <button class="btn btn-primary" onclick="sendMail()"><i class="ti ti-send"></i> Ouvrir la messagerie</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL QR -->
+<div class="modal-overlay" id="modal-qr">
+  <div class="modal" style="align-items:center">
+    <div class="modal-title" style="justify-content:center"><i class="ti ti-qrcode"></i> QR Code du dossier</div>
+    <p style="font-size:12px;color:var(--text2);text-align:center" id="qr-label"></p>
+    <canvas id="qr-canvas" width="200" height="200"></canvas>
+    <p style="font-size:11px;color:var(--text2);text-align:center">Scannez pour accéder au dossier Drive</p>
+    <button class="btn btn-outline" onclick="closeModal('modal-qr')">Fermer</button>
+  </div>
+</div>
+
+<!-- PHOTO VIEWER -->
+<div class="photo-viewer" id="photo-viewer" onclick="closeModal('photo-viewer')">
+  <button class="pv-close"><i class="ti ti-x"></i></button>
+  <img id="photo-viewer-img" src="" alt="">
+</div>
+
+<script>
+const PLANNING_PHASES=[
+  {phase:'Gros œuvre',id:'go',tasks:[
+    {id:'t_impl',l:'Implantation'},
+    {id:'t_terra',l:'Terrassement'},
+    {id:'t_fond',l:'Coulage fondations'},
+    {id:'t_elev',l:'Élévation maçonnerie'},
+    {id:'t_echaf1',l:'Pose échafaudage'},
+    {id:'t_etage',l:'Élévation étage / pignons'},
+  ]},
+  {phase:'Charpente & couverture',id:'charp',tasks:[
+    {id:'t_livcharp',l:'Livraison charpente'},
+    {id:'t_charp',l:'Pose charpente'},
+    {id:'t_ramp',l:'Rampanage'},
+    {id:'t_couv',l:'Pose couverture'},
+    {id:'t_gout',l:'Pose gouttières & descentes'},
+    {id:'t_echaf2',l:'Dépose échafaudage'},
+  ]},
+  {phase:'Second œuvre extérieur',id:'soe',tasks:[
+    {id:'t_appuis',l:'Pose appuis & seuils'},
+    {id:'t_livmen',l:'Livraison menuiseries ext.'},
+    {id:'t_men',l:'Pose menuiseries extérieures'},
+    {id:'t_raval',l:'Ravalement'},
+    {id:'t_vrd',l:'VRD'},
+    {id:'t_enedis',l:'Intervention ENEDIS'},
+  ]},
+  {phase:'Second œuvre intérieur',id:'soi',tasks:[
+    {id:'t_placo1',l:'Début placo'},
+    {id:'t_incorpo',l:'Incorporations plomberie'},
+    {id:'t_placo2',l:'Fin de placo'},
+    {id:'t_bandes',l:'Bandes'},
+    {id:'t_elec',l:'Pose appareillage électrique'},
+    {id:'t_plomb1',l:'1ère passe plomberie'},
+    {id:'t_tms',l:'Pose TMS'},
+    {id:'t_pcbt',l:'Pose PCBT'},
+  ]},
+  {phase:'Finitions',id:'fin',tasks:[
+    {id:'t_chape',l:'Coulage chape liquide'},
+    {id:'t_carrel',l:'Pose carrelage & faïence'},
+    {id:'t_plomb2',l:'Finitions plomberie'},
+    {id:'t_isol',l:'Isolation combles'},
+    {id:'t_men2',l:'Finitions menuiseries'},
+    {id:'t_chauf',l:'Mise en service chauffage'},
+    {id:'t_permea',l:'Test perméabilité à l\'air'},
+    {id:'t_recep',l:'Réception'},
+  ]},
+];
+const TOTAL_TASKS=PLANNING_PHASES.reduce((a,p)=>a+p.tasks.length,0);
+
+const COMMANDES=[
+  {id:'c_armature',l:'Kit armature',icon:'ti-box'},
+  {id:'c_plancher',l:'Plancher',icon:'ti-layers-intersect'},
+  {id:'c_coffre',l:'Coffre',icon:'ti-archive'},
+  {id:'c_charpente',l:'Charpente',icon:'ti-home-2'},
+  {id:'c_ipelec',l:'IP élec',icon:'ti-bolt'},
+  {id:'c_menext',l:'Menuiseries extérieures',icon:'ti-door'},
+  {id:'c_isol_sol',l:'Isolation de sol',icon:'ti-stack-2'},
+  {id:'c_carrel',l:'Carrelage & faïence',icon:'ti-grid-4x4'},
+];
+
+const LOTS=[
+  {id:'implantation',l:'Implantation',icon:'ti-map-pin',pts:[
+    {id:'p1',l:'Recul limites séparatives respecté',n:'NF P04-002'},
+    {id:'p2',l:'Altimétrie TN conforme au permis',n:'NF P04-002'},
+    {id:'p3',l:'Décapage terre végétale ≥ 20 cm',n:'DTU P11-201'},
+    {id:'p4',l:'Hors-gel respecté (≥ 80 cm zone H1)',n:'Carte hors-gel'},
+  ]},
+  {id:'fondations',l:'Fondations',icon:'ti-layers-intersect',pts:[
+    {id:'p5',l:'Surprofondeur fond de fouille < 5 cm',n:'DTU P11-201'},
+    {id:'p6',l:'Largeur semelles conforme plan BA',n:'DTU 13.11'},
+    {id:'p7',l:'Ferraillage conforme (espacement, enrobage)',n:'DTU 13.11 / EC2'},
+    {id:'p8',l:'Réservations et fourreaux en place',n:''},
+    {id:'p9',l:'Béton conforme (classe, consistance)',n:'NF EN 206'},
+  ]},
+  {id:'dallage',l:'Dallage / Radier',icon:'ti-square',pts:[
+    {id:'p10',l:'Épaisseur béton ≥ 12 cm',n:'DTU 13.3'},
+    {id:'p11',l:'Planéité règle 2 m ≤ 7 mm (lissé)',n:'DTU 13.3'},
+    {id:'p12',l:'Planéité règle 0,20 m ≤ 2 mm',n:'DTU 13.3'},
+    {id:'p13',l:'Barrière capillaire VS en place',n:'DTU 20.1'},
+    {id:'p14',l:'Joints de fractionnement positionnés',n:'DTU 13.3'},
+  ]},
+  {id:'maconnerie',l:'Maçonnerie / Élévation',icon:'ti-building',pts:[
+    {id:'p15',l:'Verticalité parements ≤ 15 mm/étage',n:'DTU 20.1'},
+    {id:'p16',l:'Largeur baies : L ± 10 mm',n:'DTU 20.1 art.9.1.2.3'},
+    {id:'p17',l:'Aplomb tableaux ≤ 10 mm',n:'DTU 20.1'},
+    {id:'p18',l:'Chaînages conformes',n:'DTU 20.1 / PS-MI'},
+    {id:'p19',l:'Linteaux posés, appuis suffisants',n:'DTU 20.1'},
+  ]},
+  {id:'charpente',l:'Charpente bois',icon:'ti-home-2',pts:[
+    {id:'p20',l:'Aplomb fermes < 0,005 m/m, max 18 mm',n:'DTU 31.3'},
+    {id:'p21',l:'Entraxes fermes ± 20 mm',n:'DTU 31.3'},
+    {id:'p22',l:'Contreventement en place',n:'DTU 31.3'},
+    {id:'p23',l:'Fixations et plats métalliques OK',n:'DTU 31.3'},
+    {id:'p24',l:'Traitement bois (classe emploi)',n:'NF EN 335'},
+  ]},
+  {id:'couverture',l:'Couverture',icon:'ti-barrier-block',pts:[
+    {id:'p25',l:'Planitude liteaux < 1/100 portée',n:'DTU 40.21/40.24'},
+    {id:'p26',l:'Pente conforme (mini fabricant)',n:'DTU 40.21'},
+    {id:'p27',l:'Faîtage, noues, rives traités',n:'DTU 40.21'},
+    {id:'p28',l:'Ventilation sous-couverture assurée',n:'DTU 40.21'},
+  ]},
+  {id:'menuiseries',l:'Menuiseries extérieures',icon:'ti-door',pts:[
+    {id:'p30',l:'Faux aplomb ≤ 2 mm/m',n:'DTU 36.1'},
+    {id:'p31',l:'Faux niveau ≤ 2 mm (< 1,50 m) / 3 mm',n:'DTU 36.1 art.6.4.3'},
+    {id:'p32',l:'Positionnement / axe baie ± 5 mm',n:'DTU 36.1'},
+    {id:'p33',l:'Jeu ouvrant/dormant ≤ ± 2 mm',n:'CSTB 3183'},
+    {id:'p35',l:'Volets/fermetures manœuvrables',n:'DTU 36.1 art.6.5.1.2'},
+  ]},
+  {id:'placo',l:'Plâtrerie / Placo',icon:'ti-layout-board',pts:[
+    {id:'p36',l:'Planéité cloisons ≤ 5 mm (règle 2 m)',n:'DTU 25.41'},
+    {id:'p37',l:'Aplomb cloisons ≤ 5 mm / étage',n:'DTU 25.41 art.3.63'},
+    {id:'p38',l:'Planéité plafond ≤ 5 mm, horiz. < 3 mm/m',n:'DTU 25.41 art.2.43'},
+    {id:'p39',l:'Bandes de refend et joints conformes',n:'DTU 25.41'},
+  ]},
+  {id:'carrelage',l:'Carrelage',icon:'ti-grid-4x4',pts:[
+    {id:'p40',l:'Planéité support ≤ 3 mm (règle 2 m)',n:'DTU 52.1/52.2'},
+    {id:'p41',l:'Planéité carrelage fini ≤ 3 mm',n:'DTU 52.1'},
+    {id:'p42',l:'Alignement joints ≤ 2 mm',n:'DTU 52.1'},
+    {id:'p43',l:'Déviation cordeau ≤ 1 mm/m',n:'DTU 52.1'},
+    {id:'p44',l:'Carrelage sonne plein',n:'DTU 52.1'},
+    {id:'p45',l:'SPEC eau douche (pose collée)',n:'DTU 52.2 – 2022'},
+  ]},
+  {id:'gc',l:'Garde-corps & Escalier',icon:'ti-stairs',pts:[
+    {id:'p46',l:'Hauteur protection ≥ H – 15 mm',n:'NF P01-012'},
+    {id:'p47',l:'Vide partie basse ≤ 110 + 10 mm',n:'NF P01-012'},
+    {id:'p48',l:'Vide barreaux ≤ 110 + 10 mm',n:'NF P01-012'},
+    {id:'p49',l:'Horizontalité marches ≤ 1 %',n:'DTU 31.1'},
+  ]},
+  {id:'enduits',l:'Enduits / Ravalement',icon:'ti-paint',pts:[
+    {id:'p51',l:'Épaisseur enduit ≥ 10 mm en tout point',n:'DTU 26.1'},
+    {id:'p52',l:'Épaisseur monocouche 12–18 mm',n:'DTU 26.1 art.6.2.2'},
+    {id:'p53',l:'Absence de fissures actives',n:'DTU 26.1'},
+    {id:'p54',l:'Aspect homogène sans reprises',n:'DTU 26.1'},
+  ]},
+  {id:'reception',l:'Réception CCMI',icon:'ti-clipboard-check',pts:[
+    {id:'r1',l:'Levée des réserves antérieures vérifiée',n:'Art. L231-8 CCH'},
+    {id:'r2',l:'Conformité au permis de construire',n:''},
+    {id:'r3',l:'Notice descriptive respectée',n:'Art. L231-2 CCH'},
+    {id:'r4',l:'Aucune réserve bloquante restante',n:''},
+    {id:'r5',l:'Remise des clés et documents DOE',n:'Art. L231-8 CCH'},
+    {id:'r6',l:'PV de réception signé',n:'Art. L231-8 CCH'},
+  ]},
+];
+const TOTAL_PTS=LOTS.reduce((a,l)=>a+l.pts.length,0);
+const GANTT_COLORS=['#185FA5','#0F6E56','#993C1D','#534AB7','#854F0B','#A32D2D','#3B6D11','#72243E'];
+
+let DB={chantiers:[]};
+let currentId=null;
+let currentTab='planning';
+let tempPhotos=[];
+
+function loadDB(){try{const d=localStorage.getItem('ma76_v4');if(d)DB=JSON.parse(d);}catch(e){}}
+function saveDB(){try{localStorage.setItem('ma76_v4',JSON.stringify(DB));}catch(e){}}
+
+/* HOME */
+function renderHome(){
+  const list=document.getElementById('home-list');
+  const empty=document.getElementById('home-empty');
+  list.innerHTML='';
+  if(!DB.chantiers.length){empty.style.display='block';return;}
+  empty.style.display='none';
+  DB.chantiers.slice().reverse().forEach(c=>{
+    const ok=Object.values(c.checks||{}).filter(v=>v.status==='ok').length;
+    const nok=Object.values(c.checks||{}).filter(v=>v.status==='nok').length;
+    const done=Object.values(c.tasks||{}).filter(v=>v.status==='fait').length;
+    const livre=Object.values(c.cmds||{}).filter(v=>v.status==='livre').length;
+    const pctT=Math.round(done/TOTAL_TASKS*100);
+    const el=document.createElement('div');
+    el.style.cssText='background:var(--surface);border:.5px solid var(--border);border-radius:var(--rl);padding:14px 16px;cursor:pointer;display:flex;align-items:center;gap:12px;margin-bottom:8px';
+    el.innerHTML=`<div style="width:42px;height:42px;border-radius:var(--r);background:var(--blue-bg);display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--blue-text);flex-shrink:0"><i class="ti ti-building-warehouse"></i></div>
+    <div style="flex:1;min-width:0">
+      <div style="font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${c.nom}</div>
+      <div style="font-size:12px;color:var(--text2);margin-top:2px">${c.ref?c.ref+' · ':''}${c.adresse||'Adresse non renseignée'}</div>
+      <div class="prog-bar"><div class="prog-fill" style="width:${pctT}%"></div></div>
+      <div style="display:flex;gap:5px;margin-top:5px;flex-wrap:wrap">
+        <span class="chip chip-green"><i class="ti ti-check" style="font-size:9px"></i> ${done}/${TOTAL_TASKS}</span>
+        ${nok>0?`<span class="chip chip-red"><i class="ti ti-alert-triangle" style="font-size:9px"></i> ${nok} rés.</span>`:''}
+        <span class="chip chip-blue">${Math.round(ok/TOTAL_PTS*100)}% ctrl</span>
+        ${c.drive?`<span class="chip chip-purple"><i class="ti ti-brand-google-drive" style="font-size:9px"></i> Drive</span>`:''}
+      </div>
+    </div>`;
+    el.onclick=()=>openChantier(c.id);
+    list.appendChild(el);
+  });
+}
+
+function openChantier(id){
+  currentId=id;
+  const c=DB.chantiers.find(x=>x.id===id);
+  document.getElementById('topbarTitle').textContent=c.nom;
+  document.getElementById('topbarSub').textContent=c.ref||c.adresse||'';
+  document.getElementById('backBtn').style.display='flex';
+  document.getElementById('btnAdd').style.display='none';
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('s-chantier').classList.add('active');
+  document.getElementById('nav-home').classList.add('active');
+  document.getElementById('nav-gantt').classList.remove('active');
+  switchTab('planning');
+}
+
+function gotoScreen(name){
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('nav-'+name).classList.add('active');
+  if(name==='home'){
+    document.getElementById('backBtn').style.display='none';
+    document.getElementById('btnAdd').style.display='flex';
+    document.getElementById('topbarTitle').textContent='MA76 Nord';
+    document.getElementById('topbarSub').textContent='Contrôles chantier';
+    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+    document.getElementById('s-home').classList.add('active');
+    renderHome();currentId=null;
+  } else {
+    document.getElementById('backBtn').style.display='none';
+    document.getElementById('btnAdd').style.display='none';
+    document.getElementById('topbarTitle').textContent='Vue globale';
+    document.getElementById('topbarSub').textContent='Avancement tous chantiers';
+    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+    document.getElementById('s-gantt').classList.add('active');
+    renderGantt();
+  }
+}
+
+document.getElementById('backBtn').onclick=()=>gotoScreen('home');
+
+/* TABS */
+function switchTab(tab){
+  currentTab=tab;
+  ['planning','controles','commandes','registre','info'].forEach(t=>{
+    document.getElementById('tab-'+t).classList.toggle('active',t===tab);
+  });
+  const cont=document.getElementById('tab-content');cont.innerHTML='';
+  if(tab==='planning') renderPlanning(cont);
+  else if(tab==='controles') renderLots(cont);
+  else if(tab==='commandes') renderCommandes(cont);
+  else if(tab==='registre') renderRegistre(cont);
+  else renderInfo(cont);
+}
+
+/* PLANNING */
+function renderPlanning(cont){
+  const c=DB.chantiers.find(x=>x.id===currentId);c.tasks=c.tasks||{};
+  const done=Object.values(c.tasks).filter(v=>v.status==='fait').length;
+  const enc=Object.values(c.tasks).filter(v=>v.status==='encours').length;
+  const pctT=Math.round(done/TOTAL_TASKS*100);
+  const sg=document.createElement('div');sg.className='stats-grid';
+  sg.innerHTML=`<div class="stat-card"><div class="val" style="color:var(--green)">${done}</div><div class="lbl">Réalisées</div></div>
+  <div class="stat-card"><div class="val" style="color:var(--orange)">${enc}</div><div class="lbl">En cours</div></div>`;
+  cont.appendChild(sg);
+  const pb=document.createElement('div');
+  pb.style.cssText='background:var(--surface2);border-radius:var(--r);padding:10px 14px;display:flex;align-items:center;gap:10px';
+  pb.innerHTML=`<div style="flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden"><div style="width:${pctT}%;height:100%;background:var(--blue);border-radius:3px;transition:width .4s"></div></div>
+  <span style="font-size:13px;font-weight:700;min-width:36px">${pctT}%</span>`;
+  cont.appendChild(pb);
+  PLANNING_PHASES.forEach(ph=>{
+    const phId='ph_'+ph.id;
+    const doneP=ph.tasks.filter(t=>c.tasks[t.id]&&c.tasks[t.id].status==='fait').length;
+    const card=document.createElement('div');card.className='card';
+    let rows=ph.tasks.map(t=>{
+      const ts=c.tasks[t.id]||{status:'attente'};
+      const isFait=ts.status==='fait';
+      const isEnc=ts.status==='encours';
+      return`<div class="task-row">
+        <div class="task-label" style="${isFait?'text-decoration:line-through;color:var(--text2)':''}">${t.l}</div>
+        <button class="task-sbtn ${ts.status||'attente'}" onclick="cycleTask('${t.id}',this)">
+          ${isFait?'<i class="ti ti-check" style="font-size:11px"></i> Fait':isEnc?'<i class="ti ti-clock" style="font-size:11px"></i> En cours':'En attente'}
+        </button>
+      </div>`;
+    }).join('');
+    card.innerHTML=`<div class="ch" onclick="toggleC('${phId}')">
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:600">${ph.phase}</div>
+        <div style="font-size:10px;color:var(--text2);margin-top:2px">${doneP}/${ph.tasks.length} réalisées</div>
+      </div>
+      <i class="ti ti-chevron-down ci" id="ci-${phId}"></i>
+    </div>
+    <div class="cb" id="${phId}">${rows}</div>`;
+    cont.appendChild(card);
+  });
+}
+
+function cycleTask(tid,btn){
+  const c=DB.chantiers.find(x=>x.id===currentId);c.tasks=c.tasks||{};
+  const cur=(c.tasks[tid]||{}).status||'attente';
+  const next=cur==='attente'?'encours':cur==='encours'?'fait':'attente';
+  c.tasks[tid]={...c.tasks[tid]||{},status:next};saveDB();
+  btn.className='task-sbtn '+next;
+  btn.innerHTML=next==='fait'?'<i class="ti ti-check" style="font-size:11px"></i> Fait':next==='encours'?'<i class="ti ti-clock" style="font-size:11px"></i> En cours':'En attente';
+  const row=btn.closest('.task-row');
+  if(row){const lbl=row.querySelector('.task-label');lbl.style.textDecoration=next==='fait'?'line-through':'';lbl.style.color=next==='fait'?'var(--text2)':'';}
+  const done=Object.values(c.tasks).filter(v=>v.status==='fait').length;
+  const enc=Object.values(c.tasks).filter(v=>v.status==='encours').length;
+  const cont=document.getElementById('tab-content');
+  const sg=cont.querySelector('.stats-grid');
+  if(sg){sg.children[0].querySelector('.val').textContent=done;sg.children[1].querySelector('.val').textContent=enc;}
+  const pctT=Math.round(done/TOTAL_TASKS*100);
+  const fill=cont.querySelector('.prog-fill');if(fill)fill.style.width=pctT+'%';
+  const pctEl=cont.querySelector('[style*="font-weight:700"]');if(pctEl)pctEl.textContent=pctT+'%';
+}
+
+/* CONTROLES */
+function renderLots(cont){
+  const c=DB.chantiers.find(x=>x.id===currentId);c.checks=c.checks||{};
+  const ok=Object.values(c.checks).filter(v=>v.status==='ok').length;
+  const nok=Object.values(c.checks).filter(v=>v.status==='nok').length;
+  const sg=document.createElement('div');sg.className='stats-grid';
+  sg.innerHTML=`<div class="stat-card"><div class="val" style="color:var(--green)">${ok}</div><div class="lbl">Conformes</div></div>
+  <div class="stat-card"><div class="val" style="color:var(--red)">${nok}</div><div class="lbl">Réserves</div></div>`;
+  cont.appendChild(sg);
+  LOTS.forEach(lot=>{
+    const okP=lot.pts.filter(p=>c.checks[p.id]&&c.checks[p.id].status==='ok').length;
+    const nokP=lot.pts.filter(p=>c.checks[p.id]&&c.checks[p.id].status==='nok').length;
+    const naP=lot.pts.filter(p=>c.checks[p.id]&&c.checks[p.id].status==='na').length;
+    const lotId='lot_'+lot.id;
+    const card=document.createElement('div');card.className='card';
+    const sHtml=[okP?`<span class="ls chip-green"><i class="ti ti-check" style="font-size:9px"></i> ${okP}</span>`:'',nokP?`<span class="ls chip-red"><i class="ti ti-x" style="font-size:9px"></i> ${nokP}</span>`:'',naP?`<span class="ls chip-gray">N/A ${naP}</span>`:'',!okP&&!nokP&&!naP?`<span class="ls chip-gray">${lot.pts.length} pts</span>`:''].join('');
+    const rows=lot.pts.map(p=>{
+      const s=c.checks[p.id]||{};const obs=s.obs||'';
+      return`<div class="point-row" id="row-${p.id}">
+        <div class="point-info">
+          <div class="point-label">${p.l}</div>
+          ${p.n?`<div class="point-norm"><i class="ti ti-file-text" style="font-size:10px;vertical-align:-1px"></i> ${p.n}</div>`:''}
+          ${obs?`<div class="note-obs">${obs}</div>`:''}
+          <textarea class="obs-txt" placeholder="Observation…" rows="1" onblur="saveObs('${p.id}',this.value)" style="display:${s.status==='nok'||obs?'block':'none'}">${obs}</textarea>
+        </div>
+        <div class="point-btns">
+          <button class="chk ${s.status==='ok'?'ok':''}" onclick="setCheck('${p.id}','ok')" aria-label="Conforme"><i class="ti ti-check"></i></button>
+          <button class="chk ${s.status==='nok'?'nok':''}" onclick="setCheck('${p.id}','nok')" aria-label="Non conforme"><i class="ti ti-x"></i></button>
+          <button class="chk na ${s.status==='na'?'na':''}" onclick="setCheck('${p.id}','na')" aria-label="N/A">N/A</button>
+        </div>
+      </div>`;
+    }).join('');
+    card.innerHTML=`<div class="ch" onclick="toggleC('${lotId}')">
+      <div style="width:30px;height:30px;background:var(--surface2);border-radius:var(--r);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="ti ${lot.icon}" style="font-size:15px;color:var(--text2)"></i></div>
+      <div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:600">${lot.l}</div><div class="lot-stats" id="ls-${lot.id}">${sHtml}</div></div>
+      <i class="ti ti-chevron-down ci" id="ci-${lotId}"></i>
+    </div>
+    <div class="cb" id="${lotId}">${rows}</div>`;
+    cont.appendChild(card);
+  });
+}
+
+function setCheck(pid,status){
+  const c=DB.chantiers.find(x=>x.id===currentId);c.checks=c.checks||{};
+  const prev=c.checks[pid]||{};
+  c.checks[pid]={...prev,status:prev.status===status?null:status};saveDB();
+  const row=document.getElementById('row-'+pid);if(!row)return;
+  const btns=row.querySelectorAll('.chk');
+  btns[0].className='chk'+(c.checks[pid].status==='ok'?' ok':'');
+  btns[1].className='chk'+(c.checks[pid].status==='nok'?' nok':'');
+  btns[2].className='chk na'+(c.checks[pid].status==='na'?' na':'');
+  const obs=row.querySelector('.obs-txt');
+  if(c.checks[pid].status==='nok'){obs.style.display='block';obs.focus();}
+  updateLotStats(pid);
+  const sg=document.getElementById('tab-content').querySelector('.stats-grid');
+  if(sg){
+    const ok2=Object.values(c.checks).filter(v=>v.status==='ok').length;
+    const nok2=Object.values(c.checks).filter(v=>v.status==='nok').length;
+    sg.children[0].querySelector('.val').textContent=ok2;
+    sg.children[1].querySelector('.val').textContent=nok2;
+  }
+}
+
+function updateLotStats(pid){
+  const c=DB.chantiers.find(x=>x.id===currentId);
+  const lot=LOTS.find(l=>l.pts.some(p=>p.id===pid));if(!lot)return;
+  const okP=lot.pts.filter(p=>c.checks[p.id]&&c.checks[p.id].status==='ok').length;
+  const nokP=lot.pts.filter(p=>c.checks[p.id]&&c.checks[p.id].status==='nok').length;
+  const naP=lot.pts.filter(p=>c.checks[p.id]&&c.checks[p.id].status==='na').length;
+  const el=document.getElementById('ls-'+lot.id);if(!el)return;
+  el.innerHTML=[okP?`<span class="ls chip-green"><i class="ti ti-check" style="font-size:9px"></i> ${okP}</span>`:'',nokP?`<span class="ls chip-red"><i class="ti ti-x" style="font-size:9px"></i> ${nokP}</span>`:'',naP?`<span class="ls chip-gray">N/A ${naP}</span>`:'',!okP&&!nokP&&!naP?`<span class="ls chip-gray">${lot.pts.length} pts</span>`:''].join('');
+}
+
+function saveObs(pid,val){
+  const c=DB.chantiers.find(x=>x.id===currentId);c.checks=c.checks||{};
+  c.checks[pid]=c.checks[pid]||{};c.checks[pid].obs=val;saveDB();
+}
+
+/* COMMANDES */
+function renderCommandes(cont){
+  const c=DB.chantiers.find(x=>x.id===currentId);c.cmds=c.cmds||{};
+  const cmd=Object.values(c.cmds).filter(v=>v.status==='commande').length;
+  const livre=Object.values(c.cmds).filter(v=>v.status==='livre').length;
+  cont.innerHTML=`<div class="stats-grid">
+    <div class="stat-card"><div class="val" style="color:var(--orange)">${cmd}</div><div class="lbl">Commandées</div></div>
+    <div class="stat-card"><div class="val" style="color:var(--green)">${livre}</div><div class="lbl">Livrées</div></div>
+  </div>`;
+  const card=document.createElement('div');card.className='card cp';
+  card.innerHTML=COMMANDES.map(cm=>{
+    const s=c.cmds[cm.id]||{};
+    return`<div class="cmd-row">
+      <div class="cmd-iw"><i class="ti ${cm.icon}" style="font-size:16px;color:var(--text2)"></i></div>
+      <div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:600">${cm.l}</div>
+        <input type="text" class="cmd-ref" placeholder="Réf. / fournisseur" value="${s.ref||''}" onblur="saveCmdRef('${cm.id}',this.value)">
+      </div>
+      <div style="display:flex;gap:4px;flex-shrink:0">
+        <button class="cmd-btn ${s.status==='commande'?'commande':''}" onclick="setCmdStatus('${cm.id}','commande')">${s.status==='commande'?'<i class="ti ti-clock" style="font-size:10px"></i> Cmd':'Cmd'}</button>
+        <button class="cmd-btn ${s.status==='livre'?'livre':''}" onclick="setCmdStatus('${cm.id}','livre')">${s.status==='livre'?'<i class="ti ti-check" style="font-size:10px"></i> Livré':'Livré'}</button>
+      </div>
+    </div>`;
+  }).join('');
+  cont.appendChild(card);
+}
+
+function setCmdStatus(cid,status){
+  const c=DB.chantiers.find(x=>x.id===currentId);c.cmds=c.cmds||{};
+  const prev=(c.cmds[cid]||{}).status;
+  c.cmds[cid]={...c.cmds[cid]||{},status:prev===status?'attente':status};
+  saveDB();renderCommandes(document.getElementById('tab-content'));
+}
+
+function saveCmdRef(cid,val){
+  const c=DB.chantiers.find(x=>x.id===currentId);c.cmds=c.cmds||{};
+  c.cmds[cid]={...c.cmds[cid]||{},ref:val};saveDB();
+}
+
+/* REGISTRE */
+function renderRegistre(cont){
+  const c=DB.chantiers.find(x=>x.id===currentId);
+  const entries=(c.entries||[]).slice().reverse();
+  const actions=document.createElement('div');actions.style.cssText='display:flex;gap:8px';
+  const btn1=document.createElement('button');btn1.className='btn btn-primary';btn1.style.flex='1';
+  btn1.innerHTML='<i class="ti ti-pencil"></i> Nouvelle note';btn1.onclick=openModalEntry;
+  const btn2=document.createElement('button');btn2.className='btn btn-outline';btn2.style.flex='1';
+  btn2.innerHTML='<i class="ti ti-mail"></i> Envoyer';btn2.onclick=openModalMail;
+  actions.appendChild(btn1);actions.appendChild(btn2);cont.appendChild(actions);
+  if(!entries.length){
+    const e=document.createElement('div');e.className='empty';
+    e.innerHTML='<i class="ti ti-notebook"></i>Aucune note de visite.<br>Ajoutez votre premier passage.';
+    cont.appendChild(e);return;
+  }
+  entries.forEach(e=>{
+    const d=e.date?new Date(e.date).toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'}):'Date inconnue';
+    const div=document.createElement('div');div.className='entry-card';
+    div.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+      <div style="font-size:11px;color:var(--text2)"><i class="ti ti-calendar" style="font-size:11px;vertical-align:-1px"></i> ${d}</div>
+      <button onclick="deleteEntry('${e.id}')" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:16px"><i class="ti ti-trash"></i></button>
+    </div>
+    <div style="font-size:13px;line-height:1.5">${(e.text||'').replace(/\n/g,'<br>')}</div>
+    ${e.photos&&e.photos.length?`<div class="entry-photos">${e.photos.map(p=>`<img src="${p}" class="entry-photo" onclick="viewPhoto('${p}')" alt="photo">`).join('')}</div>`:''}`;
+    cont.appendChild(div);
+  });
+}
+
+function deleteEntry(eid){
+  const c=DB.chantiers.find(x=>x.id===currentId);
+  c.entries=(c.entries||[]).filter(e=>e.id!==eid);saveDB();switchTab('registre');
+}
+
+/* INFOS */
+function renderInfo(cont){
+  const c=DB.chantiers.find(x=>x.id===currentId);
+  const ok=Object.values(c.checks||{}).filter(v=>v.status==='ok').length;
+  const nok=Object.values(c.checks||{}).filter(v=>v.status==='nok').length;
+  const done=Object.values(c.tasks||{}).filter(v=>v.status==='fait').length;
+  const livre=Object.values(c.cmds||{}).filter(v=>v.status==='livre').length;
+  const pctC=Math.round(ok/TOTAL_PTS*100);
+  const pctT=Math.round(done/TOTAL_TASKS*100);
+  const infoCard=document.createElement('div');infoCard.className='card cp';
+  infoCard.innerHTML=`<div style="display:flex;flex-direction:column;gap:10px">
+    <div class="form-group"><label>Nom / Client</label><p style="font-size:14px;font-weight:600">${c.nom}</p></div>
+    ${c.ref?`<div class="form-group"><label>N° dossier</label><p style="font-size:14px">${c.ref}</p></div>`:''}
+    ${c.adresse?`<div class="form-group"><label>Adresse</label><p style="font-size:14px">${c.adresse}</p></div>`:''}
+    ${c.date?`<div class="form-group"><label>Démarrage</label><p style="font-size:14px">${new Date(c.date).toLocaleDateString('fr-FR')}</p></div>`:''}
+    ${c.drive?`<div class="form-group"><label>Dossier Drive</label><a href="${c.drive}" target="_blank" style="font-size:13px;color:var(--blue);display:flex;align-items:center;gap:5px"><i class="ti ti-brand-google-drive"></i> Ouvrir le dossier</a></div>`:''}
+    <div class="divider"></div>
+    <div class="stats-grid">
+      <div class="stat-card"><div class="val" style="color:var(--green)">${ok}</div><div class="lbl">Contrôles OK</div></div>
+      <div class="stat-card"><div class="val" style="color:var(--red)">${nok}</div><div class="lbl">Réserves</div></div>
+      <div class="stat-card"><div class="val" style="color:var(--green)">${done}</div><div class="lbl">Tâches faites</div></div>
+      <div class="stat-card"><div class="val" style="color:var(--green)">${livre}</div><div class="lbl">Cmd livrées</div></div>
+    </div>
+    <div class="form-group"><label>Avancement planning</label>
+      <div style="display:flex;align-items:center;gap:10px">
+        <div class="prog-bar" style="flex:1;height:7px;margin:0"><div class="prog-fill" style="width:${pctT}%;height:100%"></div></div>
+        <span style="font-size:13px;font-weight:700;min-width:34px">${pctT}%</span>
+      </div>
+    </div>
+    <div class="form-group"><label>Avancement contrôles</label>
+      <div style="display:flex;align-items:center;gap:10px">
+        <div class="prog-bar" style="flex:1;height:7px;margin:0"><div class="prog-fill" style="width:${pctC}%;height:100%;background:var(--blue)"></div></div>
+        <span style="font-size:13px;font-weight:700;min-width:34px">${pctC}%</span>
+      </div>
+    </div>
+  </div>`;
+  cont.appendChild(infoCard);
+  // Drive & QR
+  const actDiv=document.createElement('div');actDiv.style.cssText='display:flex;gap:8px';
+  if(c.drive){
+    const btnDrive=document.createElement('button');btnDrive.className='btn btn-outline';btnDrive.style.flex='1';
+    btnDrive.innerHTML='<i class="ti ti-brand-google-drive"></i> Drive';
+    btnDrive.onclick=()=>window.open(c.drive,'_blank');
+    actDiv.appendChild(btnDrive);
+    const btnQr=document.createElement('button');btnQr.className='btn btn-outline';btnQr.style.flex='1';
+    btnQr.innerHTML='<i class="ti ti-qrcode"></i> QR Code';
+    btnQr.onclick=()=>showQR(c);
+    actDiv.appendChild(btnQr);
+  }
+  cont.appendChild(actDiv);
+  const btnDel=document.createElement('button');btnDel.className='btn btn-danger';
+  btnDel.innerHTML='<i class="ti ti-trash"></i> Supprimer ce chantier';
+  btnDel.onclick=deleteChantier;
+  cont.appendChild(btnDel);
+}
+
+/* QR CODE */
+function showQR(c){
+  if(!c.drive){alert('Aucun lien Drive renseigné pour ce chantier.');return;}
+  document.getElementById('qr-label').textContent=c.nom;
+  drawQR(c.drive);
+  document.getElementById('modal-qr').classList.add('open');
+}
+
+function drawQR(url){
+  const canvas=document.getElementById('qr-canvas');
+  const ctx=canvas.getContext('2d');
+  const size=200;canvas.width=size;canvas.height=size;
+  ctx.fillStyle='#fff';ctx.fillRect(0,0,size,size);
+  // QR simplifié via API externe (charge depuis une URL)
+  const img=new Image();
+  img.crossOrigin='anonymous';
+  img.onload=()=>ctx.drawImage(img,0,0,size,size);
+  img.onerror=()=>{
+    ctx.fillStyle='#1a1a1a';ctx.font='11px sans-serif';ctx.textAlign='center';
+    ctx.fillText('QR Code',100,90);ctx.fillText('(connexion requise)',100,110);
+    ctx.fillText(url.substring(0,30)+'…',100,130);
+  };
+  img.src=`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(url)}`;
+}
+
+/* MAIL */
+function openModalMail(){
+  updateMailPreview();
+  document.getElementById('modal-mail').classList.add('open');
+}
+
+function updateMailPreview(){
+  const c=DB.chantiers.find(x=>x.id===currentId);if(!c)return;
+  const type=document.getElementById('mail-type').value;
+  let body='';
+  const date=new Date().toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'});
+  if(type==='registre'){
+    const last=(c.entries||[]).slice(-1)[0];
+    if(last){
+      const d=new Date(last.date).toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+      body=`Chantier : ${c.nom}${c.ref?' ('+c.ref+')':''}\nDate de visite : ${d}\n\nObservations :\n${last.text||'Aucune observation saisie.'}`;
+    } else {body=`Chantier : ${c.nom}\n\nAucune note de visite enregistrée.`;}
+  } else if(type==='reserves'){
+    const reserves=[];
+    LOTS.forEach(lot=>{
+      lot.pts.forEach(p=>{
+        const s=(c.checks||{})[p.id];
+        if(s&&s.status==='nok') reserves.push(`• [${lot.l}] ${p.l}${s.obs?' → '+s.obs:''}`);
+      });
+    });
+    body=`Chantier : ${c.nom}${c.ref?' ('+c.ref+')':''}\nDate : ${date}\n\nRéserves en cours (${reserves.length}) :\n${reserves.length?reserves.join('\n'):'Aucune réserve.'}`;
+  } else if(type==='planning'){
+    const done=Object.values(c.tasks||{}).filter(v=>v.status==='fait').length;
+    const enc=Object.values(c.tasks||{}).filter(v=>v.status==='encours').length;
+    const pct=Math.round(done/TOTAL_TASKS*100);
+    const taches_enc=PLANNING_PHASES.flatMap(ph=>ph.tasks.filter(t=>c.tasks[t.id]&&c.tasks[t.id].status==='encours').map(t=>'• '+t.l));
+    body=`Chantier : ${c.nom}${c.ref?' ('+c.ref+')':''}\nDate : ${date}\n\nAvancement : ${pct}% (${done}/${TOTAL_TASKS} tâches)\n\nEn cours :\n${taches_enc.length?taches_enc.join('\n'):'Aucune tâche en cours.'}`;
+  } else {
+    const done=Object.values(c.tasks||{}).filter(v=>v.status==='fait').length;
+    const ok=Object.values(c.checks||{}).filter(v=>v.status==='ok').length;
+    const nok=Object.values(c.checks||{}).filter(v=>v.status==='nok').length;
+    const livre=Object.values(c.cmds||{}).filter(v=>v.status==='livre').length;
+    const reserves=[];
+    LOTS.forEach(lot=>{lot.pts.forEach(p=>{const s=(c.checks||{})[p.id];if(s&&s.status==='nok')reserves.push(`• [${lot.l}] ${p.l}${s.obs?' → '+s.obs:''}`);});});
+    body=`RAPPORT DE CHANTIER – MA76 Nord\nDate : ${date}\n\nChantier : ${c.nom}\nDossier : ${c.ref||'N/A'}\nAdresse : ${c.adresse||'N/A'}\n\n--- PLANNING ---\nAvancement : ${Math.round(done/TOTAL_TASKS*100)}% (${done}/${TOTAL_TASKS} tâches)\n\n--- CONTROLES ---\nConformes : ${ok} / Réserves : ${nok}\n\n${reserves.length?'Réserves :\n'+reserves.join('\n'):''}\n\n--- COMMANDES ---\nLivrées : ${livre}/${COMMANDES.length}`;
+  }
+  document.getElementById('mail-preview').value=body;
+}
+
+function sendMail(){
+  const c=DB.chantiers.find(x=>x.id===currentId);
+  const to=document.getElementById('mail-to').value;
+  const type=document.getElementById('mail-type').value;
+  const body=document.getElementById('mail-preview').value;
+  const subjects={registre:'Note de visite – '+c.nom,reserves:'Réserves chantier – '+c.nom,planning:'Avancement planning – '+c.nom,complet:'Rapport chantier – '+c.nom};
+  const subject=subjects[type]||'Rapport chantier – '+c.nom;
+  window.location.href=`mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  closeModal('modal-mail');
+}
+
+/* GANTT */
+function renderGantt(){
+  const cont=document.getElementById('gantt-content');cont.innerHTML='';
+  const chantiers=DB.chantiers;
+  if(!chantiers.length){cont.innerHTML=`<div class="empty"><i class="ti ti-chart-gantt"></i>Aucun chantier.<br>Créez d'abord un dossier.</div>`;return;}
+  const avgT=Math.round(chantiers.reduce((a,c)=>a+Object.values(c.tasks||{}).filter(v=>v.status==='fait').length/TOTAL_TASKS*100,0)/chantiers.length);
+  const avgC=Math.round(chantiers.reduce((a,c)=>a+Object.values(c.checks||{}).filter(v=>v.status==='ok').length/TOTAL_PTS*100,0)/chantiers.length);
+  const totalRes=chantiers.reduce((a,c)=>a+Object.values(c.checks||{}).filter(v=>v.status==='nok').length,0);
+  const sg=document.createElement('div');sg.className='stats-grid';
+  sg.innerHTML=`<div class="stat-card"><div class="val">${chantiers.length}</div><div class="lbl">Chantiers</div></div>
+  <div class="stat-card"><div class="val" style="color:${totalRes>0?'var(--red)':'var(--green)'}">${totalRes}</div><div class="lbl">Réserves</div></div>
+  <div class="stat-card"><div class="val" style="color:var(--green)">${avgT}%</div><div class="lbl">Planning moy.</div></div>
+  <div class="stat-card"><div class="val" style="color:var(--blue)">${avgC}%</div><div class="lbl">Contrôles moy.</div></div>`;
+  cont.appendChild(sg);
+
+  // Gantt
+  const now=new Date();const viewMonths=6;const months=[];
+  for(let i=0;i<viewMonths;i++){months.push(new Date(now.getFullYear(),now.getMonth()-1+i,1));}
+  const start=months[0];
+  const end=new Date(months[viewMonths-1].getFullYear(),months[viewMonths-1].getMonth()+1,0);
+  const totalMs=end-start;
+  const todayPct=Math.max(0,Math.min(100,(now-start)/totalMs*100));
+  const gc=document.createElement('div');gc.className='card';
+  const hdr=`<div class="gantt-header"><div class="gantt-label">Chantier</div><div class="gantt-months">${months.map(m=>`<div class="gantt-month">${m.toLocaleDateString('fr-FR',{month:'short',year:'2-digit'})}</div>`).join('')}</div></div>`;
+  const gRows=chantiers.map((c,idx)=>{
+    const color=GANTT_COLORS[idx%GANTT_COLORS.length];
+    const done=Object.values(c.tasks||{}).filter(v=>v.status==='fait').length;
+    const enc=Object.values(c.tasks||{}).filter(v=>v.status==='encours').length;
+    const pD=Math.round(done/TOTAL_TASKS*100);const pE=Math.round(enc/TOTAL_TASKS*100);
+    const sc=c.date?new Date(c.date):null;
+    let bL=0,bW=100;
+    if(sc){bL=Math.max(0,Math.min(100,(sc-start)/totalMs*100));bW=100-bL;}
+    const nom=c.nom.length>11?c.nom.substring(0,10)+'…':c.nom;
+    const bgC=months.map((_,i)=>`<div class="gantt-bg" style="left:${i/viewMonths*100}%;width:${100/viewMonths}%"></div>`).join('');
+    return`<div class="gantt-row">
+      <div class="gantt-rl"><div style="display:flex;align-items:center;gap:4px"><div style="width:6px;height:6px;border-radius:50%;background:${color};flex-shrink:0"></div><span style="font-size:11px">${nom}</span></div>${c.ref?`<div style="font-size:9px;color:var(--text3)">${c.ref}</div>`:''}</div>
+      <div class="gantt-tl">${bgC}<div class="gantt-today" style="left:${todayPct}%"></div>
+        <div class="gantt-bar" style="left:${bL}%;width:${bW}%"><div class="gb-done" style="width:${pD}%"></div><div class="gb-enc" style="width:${pE}%"></div><div class="gb-att" style="width:${100-pD-pE}%"></div></div>
+        <div class="gantt-pct">${pD}%</div>
+      </div>
+    </div>`;
+  }).join('');
+  const leg=`<div style="display:flex;gap:10px;flex-wrap:wrap;padding:8px 12px;border-top:.5px solid var(--border);background:var(--surface2)">
+    <div style="display:flex;align-items:center;gap:5px;font-size:10px;color:var(--text2)"><div style="width:10px;height:6px;border-radius:2px;background:#0F6E56"></div>Réalisé</div>
+    <div style="display:flex;align-items:center;gap:5px;font-size:10px;color:var(--text2)"><div style="width:10px;height:6px;border-radius:2px;background:#EF9F27"></div>En cours</div>
+    <div style="display:flex;align-items:center;gap:5px;font-size:10px;color:var(--text2)"><div style="width:10px;height:6px;border-radius:2px;background:#D3D1C7"></div>À faire</div>
+    <div style="display:flex;align-items:center;gap:5px;font-size:10px;color:var(--text2)"><div style="width:3px;height:10px;border-radius:1px;background:#E24B4A"></div>Auj.</div>
+  </div>`;
+  gc.innerHTML=hdr+gRows+leg;cont.appendChild(gc);
+
+  // Phases
+  const pl=document.createElement('div');pl.className='section-lbl';pl.style.padding='4px 0 2px';pl.textContent='Avancement par phase';cont.appendChild(pl);
+  PLANNING_PHASES.forEach(ph=>{
+    const avg=Math.round(chantiers.reduce((a,c)=>{
+      const d=ph.tasks.filter(t=>c.tasks&&c.tasks[t.id]&&c.tasks[t.id].status==='fait').length;
+      const e=ph.tasks.filter(t=>c.tasks&&c.tasks[t.id]&&c.tasks[t.id].status==='encours').length;
+      return a+(d+e*0.5)/ph.tasks.length*100;
+    },0)/chantiers.length);
+    const pc=document.createElement('div');pc.className='phase-card';
+    pc.innerHTML=`<div style="font-size:13px;font-weight:600;margin-bottom:8px;display:flex;align-items:center">${ph.phase}<span style="margin-left:auto;font-size:11px;font-weight:400;color:var(--text2)">moy. ${avg}%</span></div>`+
+    chantiers.map((c,idx)=>{
+      const color=GANTT_COLORS[idx%GANTT_COLORS.length];
+      const d=ph.tasks.filter(t=>c.tasks&&c.tasks[t.id]&&c.tasks[t.id].status==='fait').length;
+      const e=ph.tasks.filter(t=>c.tasks&&c.tasks[t.id]&&c.tasks[t.id].status==='encours').length;
+      const pct=Math.round((d+e*0.5)/ph.tasks.length*100);
+      const nom=c.nom.length>16?c.nom.substring(0,15)+'…':c.nom;
+      const fc=pct===100?'#0F6E56':pct>0?'#EF9F27':'#D3D1C7';
+      return`<div class="phase-row"><div style="width:7px;height:7px;border-radius:50%;background:${color};flex-shrink:0"></div><div style="font-size:12px;flex:1">${nom}</div><div class="phase-bar"><div class="phase-bar-fill" style="width:${pct}%;background:${fc}"></div></div><div style="font-size:11px;color:var(--text2);min-width:26px;text-align:right">${pct}%</div></div>`;
+    }).join('');
+    cont.appendChild(pc);
+  });
+
+  // Détail chantiers
+  const dl=document.createElement('div');dl.className='section-lbl';dl.style.padding='4px 0 2px';dl.textContent='Détail par chantier';cont.appendChild(dl);
+  chantiers.forEach((c,idx)=>{
+    const color=GANTT_COLORS[idx%GANTT_COLORS.length];
+    const ok=Object.values(c.checks||{}).filter(v=>v.status==='ok').length;
+    const nok=Object.values(c.checks||{}).filter(v=>v.status==='nok').length;
+    const done=Object.values(c.tasks||{}).filter(v=>v.status==='fait').length;
+    const enc=Object.values(c.tasks||{}).filter(v=>v.status==='encours').length;
+    const livre=Object.values(c.cmds||{}).filter(v=>v.status==='livre').length;
+    const pctC=Math.round(ok/TOTAL_PTS*100);const pctT=Math.round(done/TOTAL_TASKS*100);
+    const dc=document.createElement('div');dc.className='card cp';
+    dc.innerHTML=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+      <div style="width:10px;height:10px;border-radius:50%;background:${color};flex-shrink:0"></div>
+      <span style="font-size:13px;font-weight:600;flex:1">${c.nom}</span>
+      ${c.ref?`<span style="font-size:11px;color:var(--text2)">${c.ref}</span>`:''}
+    </div>
+    <div class="stats-grid" style="gap:6px;margin-bottom:8px">
+      <div class="stat-card" style="padding:7px 10px"><div style="font-size:10px;color:var(--text2)">Planning</div><div style="font-size:16px;font-weight:700;color:var(--green)">${pctT}%</div><div style="font-size:10px;color:var(--text2)">${done}/${TOTAL_TASKS} · ${enc} en cours</div></div>
+      <div class="stat-card" style="padding:7px 10px"><div style="font-size:10px;color:var(--text2)">Contrôles</div><div style="font-size:16px;font-weight:700;color:var(--blue)">${pctC}%</div><div style="font-size:10px;color:var(--text2)">${ok} OK · <span style="color:${nok>0?'var(--red)':'inherit'}">${nok} rés.</span></div></div>
+    </div>
+    <div style="display:flex;gap:6px;align-items:center">
+      <div class="prog-bar" style="flex:1;margin:0;height:5px"><div class="prog-fill" style="width:${pctT}%;height:100%;background:${color}"></div></div>
+      <span style="font-size:10px;color:var(--text2)"><i class="ti ti-truck" style="font-size:10px"></i> ${livre}/8</span>
+      ${c.date?`<span style="font-size:10px;color:var(--text2)"><i class="ti ti-calendar" style="font-size:10px"></i> ${new Date(c.date).toLocaleDateString('fr-FR',{day:'numeric',month:'short'})}</span>`:''}
+      ${c.drive?`<span style="font-size:10px;color:var(--blue);cursor:pointer" onclick="window.open('${c.drive}','_blank')"><i class="ti ti-brand-google-drive" style="font-size:10px"></i> Drive</span>`:''}
+    </div>`;
+    cont.appendChild(dc);
+  });
+}
+
+/* COLLAPSE */
+function toggleC(id){
+  const b=document.getElementById(id);const ci=document.getElementById('ci-'+id);
+  if(!b)return;b.classList.toggle('open');ci.classList.toggle('open',b.classList.contains('open'));
+}
+
+/* MODAL CHANTIER */
+function openModalNew(){
+  document.getElementById('new-date').value=new Date().toISOString().split('T')[0];
+  document.getElementById('modal-new').classList.add('open');
+  setTimeout(()=>document.getElementById('new-nom').focus(),200);
+}
+
+function createChantier(){
+  const nom=document.getElementById('new-nom').value.trim();
+  if(!nom){alert('Le nom est obligatoire.');return;}
+  const c={id:'ch_'+Date.now(),nom,
+    adresse:document.getElementById('new-adresse').value.trim(),
+    date:document.getElementById('new-date').value,
+    ref:document.getElementById('new-ref').value.trim(),
+    drive:document.getElementById('new-drive').value.trim(),
+    checks:{},entries:[],tasks:{},cmds:{}};
+  DB.chantiers.push(c);saveDB();
+  closeModal('modal-new');
+  ['new-nom','new-adresse','new-ref','new-drive'].forEach(id=>document.getElementById(id).value='');
+  renderHome();openChantier(c.id);
+}
+
+function deleteChantier(){
+  if(!confirm('Supprimer ce chantier et toutes ses données ?'))return;
+  DB.chantiers=DB.chantiers.filter(x=>x.id!==currentId);
+  saveDB();gotoScreen('home');
+}
+
+/* REGISTRE MODAL */
+function openModalEntry(){
+  document.getElementById('entry-date').value=new Date().toISOString().split('T')[0];
+  document.getElementById('modal-entry').classList.add('open');
+}
+function resetEntryForm(){
+  document.getElementById('entry-text').value='';tempPhotos=[];
+  document.getElementById('entry-photos-preview').innerHTML='<div class="photo-add" onclick="document.getElementById(\'entry-photo-input\').click()"><i class="ti ti-camera"></i></div>';
+}
+function handlePhotos(input){
+  Array.from(input.files).forEach(f=>{
+    const r=new FileReader();
+    r.onload=e=>{
+      tempPhotos.push(e.target.result);
+      const prev=document.getElementById('entry-photos-preview');
+      const img=document.createElement('img');img.src=e.target.result;img.className='entry-photo';
+      img.onclick=()=>viewPhoto(e.target.result);img.alt='photo';
+      prev.insertBefore(img,prev.lastElementChild);
+    };r.readAsDataURL(f);
+  });input.value='';
+}
+function saveEntry(){
+  const date=document.getElementById('entry-date').value;
+  if(!date){alert('La date est obligatoire.');return;}
+  const c=DB.chantiers.find(x=>x.id===currentId);
+  if(!c.entries)c.entries=[];
+  c.entries.push({id:'e_'+Date.now(),date,text:document.getElementById('entry-text').value.trim(),photos:[...tempPhotos]});
+  saveDB();closeModal('modal-entry');resetEntryForm();switchTab('registre');
+}
+
+function viewPhoto(src){document.getElementById('photo-viewer-img').src=src;document.getElementById('photo-viewer').classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+
+document.querySelectorAll('.modal-overlay').forEach(m=>{m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open');});});
+
+loadDB();renderHome();
+</script>
+</body>
+</html>
